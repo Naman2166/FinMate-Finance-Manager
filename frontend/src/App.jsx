@@ -26,7 +26,7 @@ const App = () => {
         <div>
           <Router>
             <Routes>
-              <Route path='/' element={<Root />} />            //Root component is defined below (it checks if token exist in local storage or not)
+              <Route path='/' element={<Root />} />              {/* Root component is defined below (it checks if token exist in local storage or not) */}
               <Route path='/login' element={<Login />} />
               <Route path='/signUp' element={<SignUp />} />
               <Route path='/dashboard' element={<Home />} />
