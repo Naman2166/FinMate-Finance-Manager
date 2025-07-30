@@ -104,6 +104,7 @@ const Home = () => {
           <Last30DaysExpenses
             data={dashboardData?.last30DaysExpenses?.transactions || []}
           />
+          {/* {console.log("last 30 days expense :-",dashboardData?.last30DaysExpenses?.transactions)} */}
 
           <Last60DaysIncome
             data={dashboardData?.last60DaysIncome?.transactions || []}

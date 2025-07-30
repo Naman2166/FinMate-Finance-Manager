@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import DashboardLayout from '../../components/layouts/DashboardLayout'
+import { useBudget } from '../../context/BudgetContext'
 
 const AiAdvisor = () => {
   const [messages, setMessages] = useState([
@@ -8,6 +9,17 @@ const AiAdvisor = () => {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef(null)
+  const { budgets } = useBudget();
+ 
+  //formatting budget(from budgetContext) in readble form
+  const formatBudgetData = () => {
+    if (!budgets.length) return "No budget data available.";
+  
+    return budgets.map(b =>
+      `Category: ${b?.category || 'N/A'}, Budget: ₹${b?.budget || 0}, Spent: ₹${b?.expense || 0}`
+    ).join('\n');    
+  };
+  
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -21,16 +33,19 @@ const AiAdvisor = () => {
     setInput('')
     setLoading(true)
 
+    const budgetInfo = formatBudgetData();
+    const prompt = `Here is my current budget data:\n${budgetInfo}\n\nNow, based on this, answer this query:\n${input}\n\nPlease respond in 3 short bullet points.`;
+
     try {
       const res = await fetch('https://api.cohere.ai/v1/generate', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer qlfCOdbay5nSsyPkt0t8idaKIBtWwWNS09bqiT5l`,  // 🔐 Replace this with your actual key
           'Content-Type': 'application/json'
-        },
+        }, 
         body: JSON.stringify({
           model: 'command-r-plus',     // or 'command' / 'command-light'
-          prompt: `${input}\n\nAnswer in 3 short bullet points. Start each point on a new line.`,
+          prompt: prompt,
           max_tokens: 300,
           temperature: 0.6,
           k: 0,
